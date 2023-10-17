@@ -1,10 +1,11 @@
-import styled from "styled-components"
+import styled from "styled-components";
+import GlobalStyles from "./styles/GlobalStyles";
 
 //Return new component
 const H1 = styled.h1`
   font-size: 40px;
   font-weight: 600;
-  background-color: lightcoral;
+  background-color: var(--color-grey-900);
 `;
 
 const Button = styled.button`
@@ -13,17 +14,20 @@ const Button = styled.button`
   font-weight: 500;
   border: none;
   border-radius: 7px;
-  background-color: purple;
+  background-color: var(--color-grey-300);
   color: white;
-`
+`;
 
 function App() {
   return (
-    <div>
-      <H1>The Wild Oasis</H1>
-      <Button>Click</Button>
-    </div>
-  )
+    <>
+      <GlobalStyles />
+      <div>
+        <H1>The Wild Oasis</H1>
+        <Button>Click</Button>
+      </div>
+    </>
+  );
 }
 
-export default App
+export default App;
