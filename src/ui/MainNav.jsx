@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const NavList = styled.ul`
@@ -6,7 +8,7 @@ const NavList = styled.ul`
   gap: 0.8rem;
 `;
 
-const Link = styled.a`
+const StyledNavLink = styled(NavLink)`
   &:link,
   &:visited {
     display: flex;
@@ -44,3 +46,24 @@ const Link = styled.a`
     color: var(--color-brand-600);
   }
 `;
+
+function MainNav() {
+  return (
+    <nav>
+      <NavList>
+        <li>
+          <StyledNavLink to="/dashboard">Home</StyledNavLink>
+        </li>
+        <li>
+          <StyledNavLink to="/bookings">Bookings</StyledNavLink>
+        </li>
+        <li>
+          <StyledNavLink href="/dashboard">Home</StyledNavLink>
+        </li>
+      </NavList>
+    </nav>
+  );
+}
+
+export default MainNav
+
