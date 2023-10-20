@@ -75,7 +75,7 @@ function CreateCabinForm({ setShowForm }) {
   }
 
   function onError(errors) {
-    //console.log(errors);
+    console.log(errors);
   }
 
   return (
