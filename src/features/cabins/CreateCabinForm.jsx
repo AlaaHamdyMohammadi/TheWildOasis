@@ -50,7 +50,9 @@ const Error = styled.span`
 
 function CreateCabinForm({ setShowForm }) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { errors } = formState;
+  //console.log(errors)
 
   const { isLoading: isCreating, mutate } = useMutation({
     mutationFn: createCabin,
@@ -66,25 +68,56 @@ function CreateCabinForm({ setShowForm }) {
       toast.error(err.message);
     },
   });
+
   function onSubmit(data) {
     //console.log(data);
     mutate(data);
   }
+
+  function onError(errors) {
+    //console.log(errors);
+  }
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" {...register("name")} />
+        <Input
+          type="text"
+          id="name"
+          {...register("name", { required: "This field is required" })}
+        />
+        {errors?.name?.message && <Error>{errors.name.message}</Error>}
       </FormRow>
 
       <FormRow>
         <Label htmlFor="maxCapacity">Maximum capacity</Label>
-        <Input type="number" id="maxCapacity" {...register("maxCapacity")} />
+        <Input
+          type="number"
+          id="maxCapacity"
+          {...register("maxCapacity", {
+            required: "This field is required",
+            min: { value: 1, message: "Capacity should be at least 1" },
+          })}
+        />
+        {errors?.maxCapacity?.message && (
+          <Error>{errors.maxCapacity.message}</Error>
+        )}
       </FormRow>
 
       <FormRow>
         <Label htmlFor="regularPrice">Regular price</Label>
-        <Input type="number" id="regularPrice" {...register("regularPrice")} />
+        <Input
+          type="number"
+          id="regularPrice"
+          {...register("regularPrice", {
+            required: "This field is required",
+            min: { value: 1, message: "Capacity should be at least 1" },
+          })}
+        />
+        {errors?.regularPrice?.message && (
+          <Error>{errors.regularPrice.message}</Error>
+        )}
       </FormRow>
 
       <FormRow>
@@ -93,8 +126,14 @@ function CreateCabinForm({ setShowForm }) {
           type="number"
           id="discount"
           defaultValue={0}
-          {...register("discount")}
+          {...register("discount", {
+            required: "This field is required",
+            validate: (value) =>
+              value <= getValues().regularPrice ||
+              "Discount should be less than or equal regular price",
+          })}
         />
+        {errors?.discount?.message && <Error>{errors.discount.message}</Error>}
       </FormRow>
 
       <FormRow>
@@ -103,8 +142,9 @@ function CreateCabinForm({ setShowForm }) {
           type="number"
           id="description"
           defaultValue=""
-          {...register("description")}
+          {...register("description", { required: "This field is required" })}
         />
+        {errors?.description?.message && <Error>{errors.description.message}</Error>}
       </FormRow>
 
       <FormRow>
