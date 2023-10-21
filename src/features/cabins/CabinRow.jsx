@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
+import { useState } from "react";
 import styled from "styled-components";
 import {formatCurrency} from '../../utils/helpers'
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
+import { useDeleteCabin } from "./useDeleteCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -51,41 +49,46 @@ const Discount = styled.div`
 function CabinRow({cabin}) {
   const {id: cabinId, name, maxCapacity, regularPrice, discount ,image} = cabin;
   const [showForm, setShowForm] = useState(false);
+  const { isDeleting, deleteCabin } = useDeleteCabin();
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   
-  const { isLoading, mutate } = useMutation({
-    //mutate is a function
-    mutationFn: deleteCabin,
-    //onSuccess = take callback function
-    onSuccess: () => {
-      toast.success('Cabin successfuly deleted');
-      queryClient.invalidateQueries({
-        queryKey: ['cabins']
-      });
-    },
-    onError: err => toast.error(err.message),
+  // const { isLoading, mutate } = useMutation({
+  //   //mutate is a function
+  //   mutationFn: deleteCabin,
+  //   //onSuccess = take callback function
+  //   onSuccess: () => {
+  //     toast.success('Cabin successfuly deleted');
+  //     queryClient.invalidateQueries({
+  //       queryKey: ['cabins']
+  //     });
+  //   },
+  //   onError: err => toast.error(err.message),
 
-  });
-  //console.log(test);
+  // });
+  // //console.log(test);
+
 
 
   return (
     <>
-    <TableRow role="row">
-    <Img src={`${image}`}></Img>
-    <Cabin>{name}</Cabin>
-    <div>Fits up to {maxCapacity} guests</div>
-    <Price>{formatCurrency(regularPrice)}</Price>
-    <Discount>{formatCurrency(discount)}</Discount>
-    <div>
-    <button onClick={() => setShowForm((show) => !show)}>Edit</button>
-    <button onClick={() => mutate(cabinId)}>Delete</button>
-    </div>
-    </TableRow>
-    {showForm && <CreateCabinForm cabinToEdit={cabin}/>}
+      <TableRow role="row">
+        <Img src={`${image}`}></Img>
+        <Cabin>{name}</Cabin>
+        <div>Fits up to {maxCapacity} guests</div>
+        <Price>{formatCurrency(regularPrice)}</Price>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
+        <div>
+          <button onClick={() => setShowForm((show) => !show)}>Edit</button>
+          <button onClick={() => deleteCabin(cabinId)}>Delete</button>
+        </div>
+      </TableRow>
+      {showForm && <CreateCabinForm cabinToEdit={cabin} />}
     </>
-    
   );
 }
 

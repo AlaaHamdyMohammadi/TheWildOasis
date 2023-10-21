@@ -60,8 +60,41 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
   const { errors } = formState;
   //console.log(errors)
   
+  // const queryClient = useQueryClient();
+  // const { isLoading: isCreating, mutate: createCabin } = useMutation({
+  //   mutationFn: createEditCabin,
+  //   onSuccess: () => {
+  //     toast.success("New cabin successfully created");
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["cabins"],
+  //     });
+  //     reset();
+  //     setShowForm(false);
+  //   },
+  //   onError: (err) => {
+  //     toast.error(err.message);
+  //   },
+  // });
+
+  const queryClient = useQueryClient();
   const {isCreating, createCabin} = useCreateCabin();
   const {isEditing, editCabin} = useEditCabin();
+  
+  // const { isLoading: isEditing, mutate: editCabin } = useMutation({
+  //   //Accept just one argument
+  //   mutationFn: ({newCabin, id}) => createEditCabin(newCabin, id),
+  //   onSuccess: () => {
+  //     toast.success("Cabin successfully edited");
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["cabins"],
+  //     });
+  //     reset();
+  //     //setShowForm(false);
+  //   },
+  //   onError: (err) => {
+  //     toast.error(err.message);
+  //   },
+  // });
 
   const isWorking = isCreating || isEditing;
 
