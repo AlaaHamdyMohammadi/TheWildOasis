@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import supabase, {supabaseUrl} from "./supabase";
+import supabase, { supabaseUrl } from "./supabase";
 // import supabaseUrl from "./supabase";
 
 export async function getCabins() {
@@ -12,19 +12,33 @@ export async function getCabins() {
   return data;
 }
 
-export async function createCabin(newCabin) {
+export async function createEditCabin(newCabin, id) {
+  const hasImagePath = newCabin.image?.startWith?.(supabaseUrl);
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     ""
   );
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+  const imagePath = hasImagePath ? newCabin.image : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
   //https://gpjeipjsboqtxecoiqvo.supabase.co/storage/v1/object/public/cabin-images/cabin-001.jpg
 
-  // 1. Create Cabin
-  const { data, error } = await supabase
-    .from("cabins")
-    .insert([{ ...newCabin, image: imagePath }])
-    .select();
+  // 1. Create/Edit Cabin
+  let query = supabase.from("cabins");
+  if (!id) {
+    // we use id to check if we have id so we use edit, if not we use create
+    // A) CREATE
+    query = query.insert([{ ...newCabin, image: imagePath }]).select();
+  }
+
+  // B) EDIT:
+  if(id){
+    //without array in update
+    query = query
+      .update({ ...newCabin, image: imagePath })
+      .eq("id", id)
+      .select();
+  }
+
+  const { data, error } = await query.select().single();
 
   if (error) {
     throw new Error("Cabin could not be inserted");
@@ -35,12 +49,13 @@ export async function createCabin(newCabin) {
     .from("cabin-images")
     .upload(imageName, newCabin.image);
 
-  // 3.Delete the cabin if there was an error uploading image 
-  if(storageError){
+  // 3.Delete the cabin if there was an error uploading image
+  if (storageError) {
     await supabase.from("cabins").delete().eq("id", data.id);
-        throw new Error("Cabin image could not be uploaded and the cabin not be created");
-
-  } 
+    throw new Error(
+      "Cabin image could not be uploaded and the cabin not be created"
+    );
+  }
   return data;
 }
 

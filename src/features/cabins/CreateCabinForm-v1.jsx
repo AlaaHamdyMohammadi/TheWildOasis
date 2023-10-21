@@ -10,7 +10,7 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { createEditCabin } from "../../services/apiCabins";
+import { createCabin } from "../../services/apiCabins";
 
 const FormRow = styled.div`
   display: grid;
@@ -48,19 +48,14 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
-  const {id: editId, ...editValues} = cabinToEdit;
-  const isEditSession = Boolean(editId);
-
+function CreateCabinForm({ setShowForm }) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, getValues, formState } = useForm({
-    defaultValues: isEditSession ? editValues : {},
-  });
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { errors } = formState;
   //console.log(errors)
 
-  const { isLoading: isCreating, mutate: createCabin } = useMutation({
-    mutationFn: createEditCabin,
+  const { isLoading: isCreating, mutate } = useMutation({
+    mutationFn: createCabin,
     onSuccess: () => {
       toast.success("New cabin successfully created");
       queryClient.invalidateQueries({
@@ -73,35 +68,10 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
       toast.error(err.message);
     },
   });
-  const { isLoading: isEditing, mutate: editCabin } = useMutation({
-    //Accept just one argument
-    mutationFn: ({newCabin, id}) => createEditCabin(newCabin, id),
-    onSuccess: () => {
-      toast.success("Cabin successfully edited");
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      reset();
-      //setShowForm(false);
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  const isWorking = isCreating || isEditing;
-
 
   function onSubmit(data) {
-    const image = typeof data.image === 'string' ? data.image : data.image[0]
-    if(isEditSession){
-      editCabin({newCabin: {...data, image}, id: editId})
-    }
-    else{
-      createCabin({...data, image: image})
-    }
     // console.log(data.image.at(0));
-    //mutate({ ...data, image: data.image[0] });
+    mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
@@ -184,9 +154,7 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
         <FileInput
           id="image"
           accept="image/*"
-          {...register("image", {
-            required: isEditSession ? false : "This field is required",
-          })}
+          {...register("image", { required: "This field is required" })}
         />
       </FormRow>
 
@@ -195,9 +163,7 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isWorking}>
-          {isEditSession ? "Edit cabin" : "Add cabin"}
-        </Button>
+        <Button disabled={isCreating}>Add cabin</Button>
       </FormRow>
     </Form>
   );
