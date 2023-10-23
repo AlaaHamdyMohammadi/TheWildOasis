@@ -50,8 +50,11 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
-  const {id: editId, ...editValues} = cabinToEdit;
+function CreateCabinForm({
+  cabinToEdit = {},
+  setIsOpenModal,
+}) {
+  const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
   const { register, handleSubmit, reset, getValues, formState } = useForm({
@@ -59,23 +62,26 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
   });
   const { errors } = formState;
   //console.log(errors)
-  
-  const {isCreating, createCabin} = useCreateCabin();
-  const {isEditing, editCabin} = useEditCabin();
+
+  const { isCreating, createCabin } = useCreateCabin();
+  const { isEditing, editCabin } = useEditCabin();
 
   const isWorking = isCreating || isEditing;
 
-
   function onSubmit(data) {
-    const image = typeof data.image === 'string' ? data.image : data.image[0]
-    if(isEditSession){
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    if (isEditSession) {
       editCabin(
         { newCabin: { ...data, image }, id: editId },
-        { onSuccess: (data) => reset() }
+        {
+          onSuccess: (data) => {
+            reset();
+            setIsOpenModal(false);
+          },
+        }
       );
-    }
-    else{
-      createCabin({...data, image: image}, {onSuccess: (data) => reset()})
+    } else {
+      createCabin({ ...data, image: image }, { onSuccess: (data) => {reset(); setIsOpenModal(false)} });
     }
     // console.log(data.image.at(0));
     //mutate({ ...data, image: data.image[0] });
@@ -86,7 +92,7 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form onSubmit={handleSubmit(onSubmit, onError)} type={setIsOpenModal ? 'modal' : 'regular'}>
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
         <Input
@@ -169,7 +175,11 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          onClick={() => setIsOpenModal(false)}
+          type="reset"
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
