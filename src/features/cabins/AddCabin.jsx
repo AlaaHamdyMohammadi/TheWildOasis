@@ -1,27 +1,49 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import Button from "../../ui/Button";
 import Modal from "../../ui/Modal";
 import CreateCabinForm from "./CreateCabinForm";
 import Row from "../../ui/Row";
+import CabinTable from './CabinTable';
 
 function AddCabin() {
-      const [isOpenModal, setIsOpenModal] = useState(false);
+  return (
+    <Modal>
+      <Modal.Open opens="cabin-form">
+        <Button>Add new cabin</Button>
+      </Modal.Open>
+      <Modal.Window name="cabin-form">
+        <CreateCabinForm />
+      </Modal.Window>
 
-    return (
-      <Row>
-        <Button onClick={() => setIsOpenModal((show) => !show)}>
-          Add new cabin
-        </Button>
-        {isOpenModal && (
-          <Modal
-            onClose={() => setIsOpenModal(false)}
-            setIsOpenModal={setIsOpenModal}
-          >
-            <CreateCabinForm setIsOpenModal={setIsOpenModal} />
-          </Modal>
-        )}
-      </Row>
-    );
+      <Modal.Open opens="table">
+        <Button>Show table</Button>
+      </Modal.Open>
+      <Modal.Window name="table">
+        <CabinTable />
+      </Modal.Window>
+    </Modal>
+  );
 }
 
-export default AddCabin
+// function AddCabin() {
+//       const [isOpenModal, setIsOpenModal] = useState(false);
+
+//     return (
+//       <Row>
+//         <Button onClick={() => setIsOpenModal((show) => !show)}>
+//           Add new cabin
+//         </Button>
+//         {isOpenModal && (
+//           <Modal
+//             onClose={() => setIsOpenModal(false)}
+//             setIsOpenModal={setIsOpenModal}
+//           >
+//             <CreateCabinForm setIsOpenModal={setIsOpenModal} />
+//           </Modal>
+//         )}
+//       </Row>
+//     );
+// }
+
+export default AddCabin;
