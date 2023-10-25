@@ -99,7 +99,7 @@ function Window({ children, onClose, setIsOpenModal, name }) {
  
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref}>
+      <StyledModal ref={ref} type='modal'>
         <Button onClick={close}>
           <HiXMark />
         </Button>

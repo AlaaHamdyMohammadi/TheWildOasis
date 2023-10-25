@@ -50,10 +50,7 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm({
-  cabinToEdit = {},
-  setIsOpenModal,
-}) {
+function CreateCabinForm({ cabinToEdit = {}, setIsOpenModal, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -76,12 +73,20 @@ function CreateCabinForm({
         {
           onSuccess: (data) => {
             reset();
-            setIsOpenModal(false);
+            onCloseModal?.();
           },
         }
       );
     } else {
-      createCabin({ ...data, image: image }, { onSuccess: (data) => {reset(); setIsOpenModal(false)} });
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
     }
     // console.log(data.image.at(0));
     //mutate({ ...data, image: data.image[0] });
@@ -92,7 +97,10 @@ function CreateCabinForm({
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)} type={setIsOpenModal ? 'modal' : 'regular'}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={setIsOpenModal ? "modal" : "regular"}
+    >
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
         <Input
