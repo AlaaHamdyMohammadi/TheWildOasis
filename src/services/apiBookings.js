@@ -1,5 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+
+//"*, cabins(*), guests(*)" => cabins means the cabins table and give me all things
+export async function getBookings() {
+  const { data, error } = await supabase.from("bookings").select("*, cabins(name), guests(fullName, email)");
+  if(error){
+    console.error(error);
+    throw new Error('Bookings could not be loaded');
+  }
+  return data;
+}
 
 export async function getBooking(id) {
   const { data, error } = await supabase
