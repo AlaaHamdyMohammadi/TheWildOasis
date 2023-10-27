@@ -3,8 +3,14 @@ import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
 //"*, cabins(*), guests(*)" => cabins means the cabins table and give me all things
-export async function getBookings() {
-  const { data, error } = await supabase.from("bookings").select("*, cabins(name), guests(fullName, email)");
+export async function getBookings({filter, sortBy}) {
+  let query = supabase.from("bookings").select("*, cabins(name), guests(fullName, email)");
+  
+  // Filter
+  if(filter !== null) query = query.eq(filter.field, filter.value)
+  
+  const { data, error } = await query;
+  
   if(error){
     console.error(error);
     throw new Error('Bookings could not be loaded');
