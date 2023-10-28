@@ -44,6 +44,8 @@ function Filter({ filterField, options }) {
   function handleClick(value) {
     // searchParams.set('discount', value);
     searchParams.set(filterField, value);
+    //when click on filter value in any page, I want to start from page = 1. 
+    if(searchParams.get('page')) searchParams.set('page', 1)
     setSearchParams(searchParams);
   }
   return (
