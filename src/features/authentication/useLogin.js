@@ -8,9 +8,9 @@ export function useLogin(){
     const navigate = useNavigate();
     const {isLoading: isLogging, mutate: loginMethod} = useMutation({
         mutationFn: ({email, password}) => login({email, password}),
-        onSuccess: (data) => {
+        onSuccess: () => {
             navigate('/dashboard');
-            toast.success(`${data} successfully Login`);
+            //toast.success(`${data} successfully Login`);
 
         },
         onError: () => {

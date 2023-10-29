@@ -17,7 +17,13 @@ function LoginForm() {
     function handleSubmit(e) {
       e.preventDefault();
       if (!email || !password) return;
-      loginMethod({email, password});
+      //mutation function accept optional obj, and i want when user write wrong email or password to make empty inputs
+      loginMethod({email, password}, {
+        onSettled: () =>{
+          setEmail('');
+          setPassword('')
+        }
+      });
       // login({email, password});
     }
 
