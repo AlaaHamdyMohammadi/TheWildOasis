@@ -1,16 +1,27 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import Input from "../../ui/Input";
 import FormRowVertical from "../../ui/FormRowVertical";
+import { login } from "../../services/apiAuth";
+import { useLogin } from "./useLogin";
+import SpinnerMini from "../../ui/SpinnerMini";
 
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("alaa@test.com");
+  const [password, setPassword] = useState("123456");
+  const {isLogging, loginMethod} = useLogin();
 
-  function handleSubmit() {}
+  
+    function handleSubmit(e) {
+      e.preventDefault();
+      if (!email || !password) return;
+      loginMethod({email, password});
+      // login({email, password});
+    }
 
-  return ( 
+  return (
     <Form onSubmit={handleSubmit}>
       <FormRowVertical label="Email address">
         <Input
@@ -32,7 +43,9 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large">Login</Button>
+        <Button size="large" disabled={isLogging}>
+          {!isLogging ?  'Log in' : <SpinnerMini/>}
+        </Button>
       </FormRowVertical>
     </Form>
   );
