@@ -10,7 +10,7 @@ function LoginForm() {
 
   function handleSubmit() {}
 
-  return (
+  return ( 
     <Form onSubmit={handleSubmit}>
       <FormRowVertical label="Email address">
         <Input
