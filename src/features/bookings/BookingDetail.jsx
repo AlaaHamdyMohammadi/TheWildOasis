@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
-import Spinner from '../../ui/Spinner';
+import Spinner from "../../ui/Spinner";
 import BookingDataBox from "./BookingDataBox";
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
@@ -14,6 +14,9 @@ import { useBookingDetails } from "./useBookingDetails";
 import { HiArrowDownOnSquare } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../check-in-out/useCheckout";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -27,11 +30,12 @@ function BookingDetail() {
 
   const { isLoading, booking, error } = useBookingDetails();
   const navigate = useNavigate();
-  const {isCheckingout, checkout} = useCheckout()
+  const { isCheckingout, checkout } = useCheckout();
+  const { isDeleting, deleteBooking } = useDeleteBooking();
   const moveBack = useMoveBack();
-  if(isLoading) return <Spinner/>
+  if (isLoading) return <Spinner />;
 
-  const {status, id: bookingId} = booking
+  const { status, id: bookingId } = booking;
 
   const statusToTagName = {
     unconfirmed: "blue",
@@ -62,6 +66,18 @@ function BookingDetail() {
             Check out
           </Button>
         )}
+        <Modal>
+          <Modal.Open opens="delete">
+            <Button variation="danger">Delete</Button>
+          </Modal.Open>
+          <Modal.Window name="delete">
+            <ConfirmDelete
+              resourceName="booking"
+              disabled={isDeleting}
+              onConfirm={() => deleteBooking(bookingId, {onSettled: () => navigate(-1)})}
+            ></ConfirmDelete>
+          </Modal.Window>
+        </Modal>
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>
