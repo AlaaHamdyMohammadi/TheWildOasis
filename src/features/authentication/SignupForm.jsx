@@ -4,16 +4,21 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import {useSignup} from './useSignup.js';
 
 // Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
+  const {isLoading, signupMethod} = useSignup();
   //when call register function it create a few props which we can spread this into input component
-  const { register, formState, getValues, handleSubmit } = useForm();
+  const { register, formState, getValues, handleSubmit, reset } = useForm();
   const {errors} = formState;
 
-  function onSubmit(data){
-    console.log(data)
+  function onSubmit({fullName, email, password}){
+    // console.log(data)
+    signupMethod({ fullName, email, password }, {
+      onSettled: reset,
+    });
   }
 
   return (
@@ -73,10 +78,10 @@ function SignupForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" type="reset" disabled={isLoading}>
           Cancel
         </Button>
-        <Button>Create new user</Button>
+        <Button disable={isLoading}>Create new user</Button>
       </FormRow>
     </Form>
   );

@@ -1,6 +1,25 @@
 /* eslint-disable no-unused-vars */
 import supabase from "./supabase";
 
+export async function signup({ fullName, email, password }) {
+  const { data, error } = supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        fullName,
+        avatar: "",
+      },
+    },
+  });
+
+  if(error){
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 export async function login({ email, password }) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -25,9 +44,9 @@ export async function getCurrentUser() {
   return data?.user;
 }
 
-export async function logout(){
-    const {error} = await supabase.auth.signOut();
-    if(error){
-        throw new Error(error.message);
-    }
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error(error.message);
+  }
 }
