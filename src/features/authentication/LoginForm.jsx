@@ -11,21 +11,21 @@ import SpinnerMini from "../../ui/SpinnerMini";
 function LoginForm() {
   const [email, setEmail] = useState("alaa@test.com");
   const [password, setPassword] = useState("123456");
-  const {isLogging, loginMethod} = useLogin();
+  const { login, isLoading } = useLogin();
 
-  
-    function handleSubmit(e) {
-      e.preventDefault();
-      if (!email || !password) return;
-      //mutation function accept optional obj, and i want when user write wrong email or password to make empty inputs
-      loginMethod({email, password}, {
-        onSettled: () =>{
-          setEmail('');
-          setPassword('')
-        }
-      });
-      // login({email, password});
-    }
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!email || !password) return;
+    login(
+      { email, password },
+      {
+        onSettled: () => {
+          setEmail("");
+          setPassword("");
+        },
+      }
+    );
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -49,8 +49,8 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLogging}>
-          {!isLogging ?  'Log in' : <SpinnerMini/>}
+        <Button size="large" disabled={isLoading}>
+          {!isLoading ?  'Log in' : <SpinnerMini/>}
         </Button>
       </FormRowVertical>
     </Form>

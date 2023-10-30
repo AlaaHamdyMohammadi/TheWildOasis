@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import styled from "styled-components";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const StyledLogo = styled.div`
   text-align: center;
@@ -10,9 +12,12 @@ const Img = styled.img`
 `;
 
 function Logo() {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+
+  const src = isDarkMode ? "/logo-dark.png" : "/logo-light.png";
   return (
     <StyledLogo>
-      <Img src="/logo-light.png" alt="Logo" />
+      <Img src={src} alt="Logo" />
     </StyledLogo>
   );
 }
