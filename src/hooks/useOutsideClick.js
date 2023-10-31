@@ -9,7 +9,7 @@ export function useOutsideClick(handler){
       function () {
         function handleClick(e) {
           if (ref.current && !ref.current.contains(e.target)) {
-            console.log("click outside");
+            //console.log("click outside");
             handler();
           }
         }
@@ -20,5 +20,5 @@ export function useOutsideClick(handler){
       [handler]
     );
 
-    return { ref };
+    return ref ;
 }

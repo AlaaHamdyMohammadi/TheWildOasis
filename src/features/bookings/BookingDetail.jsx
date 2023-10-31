@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import Spinner from "../../ui/Spinner";
+import Empty from "../../ui/Empty";
 import BookingDataBox from "./BookingDataBox";
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
@@ -33,7 +34,9 @@ function BookingDetail() {
   const { isCheckingout, checkout } = useCheckout();
   const { isDeleting, deleteBooking } = useDeleteBooking();
   const moveBack = useMoveBack();
+
   if (isLoading) return <Spinner />;
+  if(!booking) return <Empty resourceName='booking'/>
 
   const { status, id: bookingId } = booking;
 
