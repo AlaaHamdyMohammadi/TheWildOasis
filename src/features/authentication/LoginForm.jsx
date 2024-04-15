@@ -33,6 +33,7 @@ function LoginForm() {
         <Input
           type="email"
           id="email"
+          placeholder="alaahamdy2@gmail.com"
           // This makes this form better for password managers
           autoComplete="username"
           value={email}
@@ -43,6 +44,7 @@ function LoginForm() {
         <Input
           type="password"
           id="password"
+          placeholder="wildProject$"
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -50,7 +52,7 @@ function LoginForm() {
       </FormRowVertical>
       <FormRowVertical>
         <Button size="large" disabled={isLoading}>
-          {!isLoading ?  'Log in' : <SpinnerMini/>}
+          {!isLoading ? "Log in" : <SpinnerMini />}
         </Button>
       </FormRowVertical>
     </Form>
